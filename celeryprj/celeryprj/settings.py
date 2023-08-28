@@ -14,10 +14,8 @@ SECRET_KEY = 'django-insecure-mld(h1ca=0$o*+_#h&)v95a8u_1=wa(z-z)0!#u)2i1b0yx=my
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG")
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(',')
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(",")
 
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -26,6 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'serviceapp',
 ]
 
 MIDDLEWARE = [
@@ -43,7 +42,7 @@ ROOT_URLCONF = 'celeryprj.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ["BASE_DIR/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,6 +110,15 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+# celery configuration
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://redis:6379/0")
 
-CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND')
+
+# email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'prakashpatilmeti@gmail.com'
+EMAIL_HOST_PASSWORD = 'zjdfrutdyikkpfew'

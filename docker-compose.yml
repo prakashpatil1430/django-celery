@@ -9,9 +9,7 @@ services:
     container_name: django
     build:
       context: ./celeryprj
-    command: >
-      sh -c "python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./celeryprj:/usr/src/app/
     ports:
@@ -26,15 +24,25 @@ services:
     container_name: celery
     build:
       context: ./celeryprj
-    command: celery -A celeryprj worker -l info
+    command: celery --app=celeryprj worker -l INFO 
     volumes:
       - ./celeryprj:/usr/src/app/
     environment:
-      CELERY_BROKER_URL: "redis://redis:6379/0"
-      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+      - DEBUG=1
+      - ALLOWED_HOSTS=localhost,127.0.0.1
     depends_on:
       - redis
       - django
-    
 
+  celery2:
+    container_name: celery2
+    build:
+      context: ./celeryworker
+      dockerfile: Dockerfile
+    command: celery -A celerytask worker --loglevel=INFO 
+    volumes:
+      - ./celeryworker:/usr/src/app/
+    depends_on:
+      - redis
+      - django
     
